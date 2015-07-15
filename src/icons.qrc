@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>res/exit.svg</file>
+        <file>res/locked.svg</file>
+        <file>res/unlocked.svg</file>
+    </qresource>
+</RCC>
