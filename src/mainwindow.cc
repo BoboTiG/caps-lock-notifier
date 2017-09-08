@@ -3,7 +3,7 @@
  * \file mainwindow.cc
  * \brief Main window for Caps Lock Notifier.
  * \author JMSinfo SAS <www.jmsinfo.co>
- * \date 2015.07.08
+ * \date 2015.11.19
  *
  * Copyleft ((C)) 2014, 2015 JMSinfo SAS
  */
@@ -24,6 +24,10 @@ MainWindow::MainWindow(QWidget *parent):
     tooltip(QString()),
     msg(QString()),
     icon(QIcon())
+#ifdef __linux__
+    ,
+    display(XOpenDisplay(0))
+#endif
 {
     trayMenu->addAction(QIcon(":/res/exit.svg"), tr("Exit"), this, SLOT(quit()));
     trayIcon->setContextMenu(trayMenu);
@@ -43,9 +47,15 @@ void MainWindow::toggle_capslock()
 {
     bool new_state;
 
+#ifdef __linux__
+    // https://stackoverflow.com/questions/9009775/using-getkeystatevk-capital-1-in-linux
+    unsigned int n = 0;
+    XkbGetIndicatorState(display, XkbUseCoreKbd, &n);
+    new_state = n & 0x01;
+#elif defined _WIN32 || defined _WIN64
     // https://stackoverflow.com/questions/2968336/qt-password-field
-    // 0X14 = VK_CAPITAL = Escape key
-    new_state = (GetKeyState(0X14) & 0x0001) != 0;
+    new_state = (GetKeyState(VK_CAPITAL) & 0x0001) != 0;
+#endif
 
     if ( new_state != caps_state || first_run ) {
         if (new_state) {

@@ -12,10 +12,11 @@ SOURCES     += main.cc mainwindow.cc
 HEADERS     += mainwindow.h
 RESOURCES   += icons.qrc
 TRANSLATIONS = l10n/fr_FR.ts
+QT          += core widgets
 
 win32 {
     TARGET  += .exe
     RC_FILE += resources.rc
+} unix {
+    LIBS    += -lX11
 }
-
-QT += core widgets
